@@ -11,7 +11,9 @@ QString SessionMgr::getUrl(const QString url)
     QObject::connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
     loop.exec();
     QString result = QTextCodec::codecForName("utf8")->toUnicode(reply->readAll());
-    delete reply;
+    if (result.isEmpty()) {
+        throw std::logic_error("Network error");
+    }
     return result;
 }
 

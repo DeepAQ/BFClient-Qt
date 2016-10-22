@@ -34,3 +34,8 @@ void MainWindow::on_actionExecute_triggered()
         QMessageBox::critical(this, "Error", e.what());
     }
 }
+
+void MainWindow::on_actionAbout_triggered()
+{
+    QMessageBox::aboutQt(this, "About");
+}

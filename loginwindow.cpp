@@ -25,6 +25,7 @@ void LoginWindow::on_loginButton_clicked()
     if (username.isEmpty() || password.isEmpty() || server.isEmpty())
         return;
     SessionMgr::host = server;
+    ui->loginButton->setDisabled(true);
     try {
         SessionMgr::login(username, password);
         MainWindow *w = new MainWindow(username);
@@ -33,5 +34,6 @@ void LoginWindow::on_loginButton_clicked()
     }
     catch (const std::logic_error e) {
         QMessageBox::critical(this, "Error", e.what());
+        ui->loginButton->setDisabled(false);
     }
 }
