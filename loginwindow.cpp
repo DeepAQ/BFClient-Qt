@@ -27,7 +27,9 @@ void LoginWindow::on_loginButton_clicked()
     SessionMgr::host = server;
     try {
         SessionMgr::login(username, password);
-        // TODO after login
+        MainWindow *w = new MainWindow(username);
+        w->show();
+        close();
     }
     catch (const std::logic_error e) {
         QMessageBox::critical(this, "Error", e.what());

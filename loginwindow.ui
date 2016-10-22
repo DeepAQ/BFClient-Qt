@@ -129,6 +129,12 @@
    </property>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>editUser</tabstop>
+  <tabstop>editPass</tabstop>
+  <tabstop>loginButton</tabstop>
+  <tabstop>editServer</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

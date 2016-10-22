@@ -13,7 +13,11 @@ class MainWindow : public QMainWindow
 
 public:
     explicit MainWindow(QWidget *parent = 0);
+    explicit MainWindow(QString username);
     ~MainWindow();
+
+private slots:
+    void on_actionExecute_triggered();
 
 private:
     Ui::MainWindow *ui;
