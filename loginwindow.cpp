@@ -1,6 +1,7 @@
 #include "loginwindow.h"
 #include "ui_loginwindow.h"
 #include "sessionmgr.h"
+#include "mainwindow.h"
 
 #include <QMessageBox>
 
@@ -24,5 +25,11 @@ void LoginWindow::on_loginButton_clicked()
     if (username.isEmpty() || password.isEmpty() || server.isEmpty())
         return;
     SessionMgr::host = server;
-    QMessageBox::information(this, "test", SessionMgr::login(username, password));
+    try {
+        SessionMgr::login(username, password);
+        // TODO after login
+    }
+    catch (const std::logic_error e) {
+        QMessageBox::critical(this, "Error", e.what());
+    }
 }

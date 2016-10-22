@@ -8,7 +8,7 @@ class SessionMgr
 public:
     static QString host;
     static QString getUrl(const QString);
-    static QString login(const QString, const QString);
+    static void login(const QString, const QString);
 
 private:
     static QString session_id;

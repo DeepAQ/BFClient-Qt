@@ -15,10 +15,17 @@ QString SessionMgr::getUrl(const QString url)
     return result;
 }
 
-QString SessionMgr::login(const QString username, const QString password)
+void SessionMgr::login(const QString username, const QString password)
 {
     QString pwd_hash = "";
     pwd_hash.append(QCryptographicHash::hash(password.toUtf8(), QCryptographicHash::Sha1).toHex());
     QString url = host + "/user/login?username=" + username + "&pwdhash=" + pwd_hash;
-    return getUrl(url);
+    delete &pwd_hash;
+    QJsonObject json = QJsonDocument::fromJson(getUrl(url).toUtf8()).object();
+    delete &url;
+    if (json.value("result").toInt() != 0) {
+        throw std::logic_error(json.value("errmsg").toString().toUtf8().data());
+    }
+    session_id = json.value("sessid").toString();
+    delete &json;
 }
