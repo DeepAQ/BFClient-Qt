@@ -1,5 +1,6 @@
 #include "loginwindow.h"
 #include "ui_loginwindow.h"
+#include "sessionmgr.h"
 
 #include <QMessageBox>
 
@@ -22,5 +23,6 @@ void LoginWindow::on_loginButton_clicked()
             server = ui->editServer->text();
     if (username.isEmpty() || password.isEmpty() || server.isEmpty())
         return;
-
+    SessionMgr::host = server;
+    QMessageBox::information(this, "test", SessionMgr::login(username, password));
 }
