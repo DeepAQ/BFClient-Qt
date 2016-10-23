@@ -4,6 +4,7 @@
 #include "loginwindow.h"
 
 #include <QMessageBox>
+#include <QInputDialog>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -18,11 +19,26 @@ MainWindow::MainWindow(QString &username) :
 {
     ui->setupUi(this);
     ui->menuUser->setTitle("Logged in as: " + username);
+    updateTitle();
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::updateTitle()
+{
+    QString title = modified ? "* " : "";
+    title.append(file_name.isEmpty() ? "Untitled.bf" : file_name+".bf ("+file_version+")");
+    title.append(" - BrainFuck IDE");
+    this->setWindowTitle(title);
+}
+
+void MainWindow::on_editCode_textChanged()
+{
+    modified = (ui->editCode->toPlainText() != original_code);
+    updateTitle();
 }
 
 void MainWindow::on_actionExit_triggered()
@@ -77,4 +93,30 @@ void MainWindow::on_actionLogout_triggered()
     LoginWindow *w = new LoginWindow();
     w->show();
     close();
+}
+
+void MainWindow::on_actionSave_triggered()
+{
+    if (!modified) return;
+    if (file_name.isEmpty())
+        on_actionSave_as_triggered();
+    else try {
+        QString new_version = SessionMgr::saveFile(ui->editCode->toPlainText(), file_name);
+        file_version = new_version;
+        original_code = ui->editCode->toPlainText();
+        modified = false;
+        updateTitle();
+    }
+    catch (const std::logic_error e) {
+        QMessageBox::critical(this, "Error", e.what());
+    }
+}
+
+void MainWindow::on_actionSave_as_triggered()
+{
+    QString input = QInputDialog::getText(this, "Prompt", "Filename:");
+    if (input.isEmpty()) return;
+    file_name = input;
+    modified = true;
+    on_actionSave_triggered();
 }

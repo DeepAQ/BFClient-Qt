@@ -34,6 +34,17 @@ void SessionMgr::logout()
     session_id = "";
 }
 
+QString SessionMgr::saveFile(const QString &code, const QString &filename)
+{
+    QString enc_code = QString(code.toUtf8().toPercentEncoding().toPercentEncoding());
+    QString url = host + "/io/save?sessid=" + session_id + "&code=" + enc_code + "&filename=" + filename;
+    QJsonObject json = QJsonDocument::fromJson(getUrl(url).toUtf8()).object();
+    if (json.value("result").toInt() < 0) {
+        throw std::logic_error(json.value("errmsg").toString().toUtf8().data());
+    }
+    return json.value("version").toString();
+}
+
 std::pair<QString, QString> SessionMgr::execute(const QString &code, const QString &input)
 {
     QString enc_code = QString(code.toUtf8().toPercentEncoding().toPercentEncoding());
