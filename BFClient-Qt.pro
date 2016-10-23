@@ -26,3 +26,7 @@ HEADERS  += mainwindow.h \
 FORMS    += mainwindow.ui \
     loginwindow.ui \
     openwindow.ui
+
+DISTFILES += \
+    LICENSE \
+    README.md
