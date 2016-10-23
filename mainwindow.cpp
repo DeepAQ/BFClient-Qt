@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "sessionmgr.h"
+#include "loginwindow.h"
 
 #include <QMessageBox>
 
@@ -11,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 }
 
-MainWindow::MainWindow(QString username) :
+MainWindow::MainWindow(QString &username) :
     QMainWindow(0),
     ui(new Ui::MainWindow)
 {
@@ -68,4 +69,12 @@ void MainWindow::on_actionExecute_triggered()
 void MainWindow::on_actionAbout_triggered()
 {
     QMessageBox::aboutQt(this, "About");
+}
+
+void MainWindow::on_actionLogout_triggered()
+{
+    SessionMgr::logout();
+    LoginWindow *w = new LoginWindow();
+    w->show();
+    close();
 }

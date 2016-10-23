@@ -4,7 +4,7 @@ QString SessionMgr::host = QString("http://localhost:8081");
 QString SessionMgr::session_id = QString("");
 QNetworkAccessManager SessionMgr::manager;
 
-QString SessionMgr::getUrl(const QString url)
+QString SessionMgr::getUrl(const QString &url)
 {
     QNetworkReply *reply = manager.get(QNetworkRequest(QUrl(url)));
     QEventLoop loop;
@@ -17,7 +17,7 @@ QString SessionMgr::getUrl(const QString url)
     return result;
 }
 
-void SessionMgr::login(const QString username, const QString password)
+void SessionMgr::login(const QString &username, const QString &password)
 {
     QString pwd_hash = "";
     pwd_hash.append(QCryptographicHash::hash(password.toUtf8(), QCryptographicHash::Sha1).toHex());
@@ -29,7 +29,12 @@ void SessionMgr::login(const QString username, const QString password)
     session_id = json.value("sessid").toString();
 }
 
-std::pair<QString, QString> SessionMgr::execute(const QString code, const QString input)
+void SessionMgr::logout()
+{
+    session_id = "";
+}
+
+std::pair<QString, QString> SessionMgr::execute(const QString &code, const QString &input)
 {
     QString enc_code = QString(code.toUtf8().toPercentEncoding().toPercentEncoding());
     QString enc_input = QString(input.toUtf8().toPercentEncoding().toPercentEncoding());

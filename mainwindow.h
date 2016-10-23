@@ -13,7 +13,7 @@ class MainWindow : public QMainWindow
 
 public:
     explicit MainWindow(QWidget *parent = 0);
-    explicit MainWindow(QString username);
+    explicit MainWindow(QString &username);
     ~MainWindow();
 
 private slots:
@@ -32,6 +32,8 @@ private slots:
     void on_actionCopy_triggered();
 
     void on_actionPaste_triggered();
+
+    void on_actionLogout_triggered();
 
 private:
     Ui::MainWindow *ui;
