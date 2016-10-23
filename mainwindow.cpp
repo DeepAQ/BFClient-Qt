@@ -24,6 +24,36 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::on_actionExit_triggered()
+{
+    close();
+}
+
+void MainWindow::on_actionUndo_triggered()
+{
+    ui->editCode->undo();
+}
+
+void MainWindow::on_actionRedo_triggered()
+{
+    ui->editCode->redo();
+}
+
+void MainWindow::on_actionCut_triggered()
+{
+    ui->editCode->cut();
+}
+
+void MainWindow::on_actionCopy_triggered()
+{
+    ui->editCode->copy();
+}
+
+void MainWindow::on_actionPaste_triggered()
+{
+    ui->editCode->paste();
+}
+
 void MainWindow::on_actionExecute_triggered()
 {
     try {
