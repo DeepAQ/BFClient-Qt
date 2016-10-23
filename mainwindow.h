@@ -48,6 +48,8 @@ private:
     Ui::MainWindow *ui;
     bool modified = false;
     void updateTitle();
+    bool checkSaved();
+    void closeEvent(QCloseEvent *event);
 };
 
 #endif // MAINWINDOW_H

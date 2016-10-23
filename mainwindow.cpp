@@ -35,6 +35,30 @@ void MainWindow::updateTitle()
     this->setWindowTitle(title);
 }
 
+bool MainWindow::checkSaved()
+{
+    if (!modified) return true;
+    int ret = QMessageBox::question(this, "Confirmation", "File not saved, save it?",
+                                    QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+    switch (ret) {
+        case QMessageBox::Save:
+            on_actionSave_triggered();
+            return false;
+        case QMessageBox::Discard:
+            return true;
+        default:
+            return false;
+    }
+}
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    if (checkSaved())
+        event->accept();
+    else
+        event->ignore();
+}
+
 void MainWindow::on_editCode_textChanged()
 {
     modified = (ui->editCode->toPlainText() != original_code);
