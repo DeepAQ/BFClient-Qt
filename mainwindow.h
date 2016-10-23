@@ -12,11 +12,12 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
+    Ui::MainWindow *ui;
     QString file_name = "";
     QString file_version = "";
     QString original_code = "";
-    explicit MainWindow(QWidget *parent = 0);
-    explicit MainWindow(QString &username);
+    bool modified = false;
+    explicit MainWindow(QString &username, QWidget *parent = 0);
     ~MainWindow();
 
 private slots:
@@ -44,9 +45,11 @@ private slots:
 
     void on_actionSave_as_triggered();
 
+    void on_actionNew_triggered();
+
+    void on_actionOpen_triggered();
+
 private:
-    Ui::MainWindow *ui;
-    bool modified = false;
     void updateTitle();
     bool checkSaved();
     void closeEvent(QCloseEvent *event);

@@ -10,7 +10,7 @@ QString SessionMgr::getUrl(const QString &url)
     QEventLoop loop;
     QObject::connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
     loop.exec();
-    QString result = QTextCodec::codecForName("utf8")->toUnicode(reply->readAll());
+    QString result = QTextCodec::codecForName("GB18030")->toUnicode(reply->readAll());
     if (result.isEmpty()) {
         throw std::logic_error("Network error");
     }
@@ -32,6 +32,22 @@ void SessionMgr::login(const QString &username, const QString &password)
 void SessionMgr::logout()
 {
     session_id = "";
+}
+
+QJsonArray SessionMgr::fileList()
+{
+    QString url = host + "/io/list?sessid=" + session_id;
+    return QJsonDocument::fromJson(getUrl(url).toUtf8()).array();
+}
+
+QString SessionMgr::fileContent(const QString &filename, const QString &version)
+{
+    QString url = host + "/io/open?sessid=" + session_id + "&filename=" + filename + "&version=" + version;
+    QJsonObject json = QJsonDocument::fromJson(getUrl(url).toUtf8()).object();
+    if (json.value("result").toInt() < 0) {
+        throw std::logic_error(json.value("errmsg").toString().toUtf8().data());
+    }
+    return json.value("code").toString();
 }
 
 QString SessionMgr::saveFile(const QString &code, const QString &filename)

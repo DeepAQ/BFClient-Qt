@@ -2,19 +2,13 @@
 #include "ui_mainwindow.h"
 #include "sessionmgr.h"
 #include "loginwindow.h"
+#include "openwindow.h"
 
 #include <QMessageBox>
 #include <QInputDialog>
 
-MainWindow::MainWindow(QWidget *parent) :
+MainWindow::MainWindow(QString &username, QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
-{
-    ui->setupUi(this);
-}
-
-MainWindow::MainWindow(QString &username) :
-    QMainWindow(0),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
@@ -65,6 +59,50 @@ void MainWindow::on_editCode_textChanged()
     updateTitle();
 }
 
+void MainWindow::on_actionNew_triggered()
+{
+    if (!checkSaved()) return;
+    ui->editCode->clear();
+    file_name = file_version = original_code = "";
+    modified = false;
+    updateTitle();
+}
+
+void MainWindow::on_actionOpen_triggered()
+{
+    if (!checkSaved()) return;
+    OpenWindow *w = new OpenWindow(this);
+    w->show();
+}
+
+void MainWindow::on_actionSave_triggered()
+{
+    if (!modified) return;
+    if (file_name.isEmpty())
+        on_actionSave_as_triggered();
+    else try {
+        QString new_version = SessionMgr::saveFile(ui->editCode->toPlainText(), file_name);
+        if (!new_version.isEmpty()) {
+            file_version = new_version;
+            original_code = ui->editCode->toPlainText();
+            modified = false;
+            updateTitle();
+        }
+    }
+    catch (const std::logic_error& e) {
+        QMessageBox::critical(this, "Error", e.what());
+    }
+}
+
+void MainWindow::on_actionSave_as_triggered()
+{
+    QString input = QInputDialog::getText(this, "Prompt", "Filename:");
+    if (input.isEmpty()) return;
+    file_name = input;
+    modified = true;
+    on_actionSave_triggered();
+}
+
 void MainWindow::on_actionExit_triggered()
 {
     close();
@@ -101,7 +139,7 @@ void MainWindow::on_actionExecute_triggered()
         auto result = SessionMgr::execute(ui->editCode->toPlainText(), ui->editInput->toPlainText());
         ui->editOutput->setText(result.first + "\n====================\nExecution success, used " + result.second + "ms");
     }
-    catch (const std::logic_error e) {
+    catch (const std::logic_error& e) {
         QMessageBox::critical(this, "Error", e.what());
     }
 }
@@ -117,30 +155,4 @@ void MainWindow::on_actionLogout_triggered()
     LoginWindow *w = new LoginWindow();
     w->show();
     close();
-}
-
-void MainWindow::on_actionSave_triggered()
-{
-    if (!modified) return;
-    if (file_name.isEmpty())
-        on_actionSave_as_triggered();
-    else try {
-        QString new_version = SessionMgr::saveFile(ui->editCode->toPlainText(), file_name);
-        file_version = new_version;
-        original_code = ui->editCode->toPlainText();
-        modified = false;
-        updateTitle();
-    }
-    catch (const std::logic_error e) {
-        QMessageBox::critical(this, "Error", e.what());
-    }
-}
-
-void MainWindow::on_actionSave_as_triggered()
-{
-    QString input = QInputDialog::getText(this, "Prompt", "Filename:");
-    if (input.isEmpty()) return;
-    file_name = input;
-    modified = true;
-    on_actionSave_triggered();
 }

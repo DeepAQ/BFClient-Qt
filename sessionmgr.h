@@ -10,6 +10,8 @@ public:
     static QString getUrl(const QString &url);
     static void login(const QString &username, const QString &password);
     static void logout();
+    static QJsonArray fileList();
+    static QString fileContent(const QString &filename, const QString &version);
     static QString saveFile(const QString &code, const QString &filename);
     static std::pair<QString, QString> execute(const QString &code, const QString &input);
 

@@ -32,7 +32,7 @@ void LoginWindow::on_loginButton_clicked()
         w->show();
         close();
     }
-    catch (const std::logic_error e) {
+    catch (const std::logic_error& e) {
         QMessageBox::critical(this, "Error", e.what());
         ui->loginButton->setDisabled(false);
     }
